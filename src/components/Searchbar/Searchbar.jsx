@@ -1,32 +1,30 @@
-import React, { Component } from 'react';
+import  { useState} from 'react';
 import styles from "./Searchbar.module.css";
 import Notiflix from 'notiflix';
 import PropTypes from 'prop-types';
 
-export class Searchbar extends Component {
-    state = {
-        imgName: '',
-    };
+export const Searchbar = ({onSubmit}) => {
+    
+  const [imgName, setImgName] = useState('');
 
-handleNameChange = e => {
-  this.setState({imgName: e.currentTarget.value.toLowerCase()});
+const handleNameChange = e => {
+  setImgName(e.currentTarget.value.toLowerCase());
   
     }; 
-handleSubmit = e => {
+const handleSubmit = e => {
     e.preventDefault();
 
-      if (this.state.imgName.trim() === ``) {
+      if (imgName.trim() === ``) {
           Notiflix.Notify.failure(`Please enter the text request`)
           return;
   }
-    this.props.onSubmit(this.state.imgName);
-        this.setState({ imgName: '' });
+  onSubmit(imgName);
+        setImgName('');
 }
 
-  render() {
     return (
   <header className={styles.Searchbar}>
-    <form onSubmit={this.handleSubmit} className={styles.SearchForm}>
+    <form onSubmit={handleSubmit} className={styles.SearchForm}>
     <button type="submit" className={styles.SearchFormButton}>
     <span className={styles.SearchFormButtonLabel}>Search</span>
     </button>
@@ -35,8 +33,8 @@ handleSubmit = e => {
     className={styles.SearchFormInput}
     type="text"
     name="imgName"
-     value={this.state.imgName}
-     onChange={this.handleNameChange}
+     value={imgName}
+     onChange={handleNameChange}
     autoComplete="off"
     autoFocus
     placeholder="Search images and photos"
@@ -45,7 +43,7 @@ handleSubmit = e => {
 </header>
     );
   }
-}
+
 
 Searchbar.propTypes = {
   onSubmit: PropTypes.func.isRequired,

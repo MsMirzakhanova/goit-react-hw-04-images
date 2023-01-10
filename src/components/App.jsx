@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect} from 'react';
 import { Loader } from "./Loader/Loader";
 import styles from "./app.module.css";
 import { fetchImages } from './fetchimages';
@@ -8,69 +8,66 @@ import {ImageGallery} from './ImageGallery/ImageGallery';
 import { Button } from './Button/Button';
 
 
-export class App extends Component {
-  state = {
-    searchImages: [],
-    imgName: '',
-    page: 1,
-    error: null,
-    largeImageURL: '',
-    showModal: false
+export function App() {
+  const [searchImages, setSearchImages] = useState([]);
+  const [imgName, setImgName] = useState('');
+  const [page, setPage] = useState(1);
+  const [error, setError] = useState(null);
+  const [largeImageURL, setLargeImageURL] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  };
-
-  componentDidUpdate(_, prevState) {
-        const { page, imgName } = this.state;
-        if (prevState.page !== page || prevState.imgName !== imgName) {
-            this.setState({ loading: true });
-            fetchImages(imgName, page)
+  useEffect(() => {
+    if (!imgName) {
+      return;
+    }
+    setLoading(true);
+                fetchImages(imgName, page)
             .then(data =>
-                this.setState(({searchImages}) => {
+                setSearchImages((searchImages) => {
                     return {
                         searchImages: [...searchImages, ...data.hits]
                     }
                 }))
             .catch(error => {
-                this.setState({ error })
+                setError(error)
             })
-            .finally(() => this.setState({ loading: false }))
-        }
-    }
+            .finally(() => setLoading(false))
+
+}, [page,imgName ]);
+  
 
 
-  handleFormSubmit = imgName => {
-         if (this.state.imgName !== imgName) {
-            this.setState({ imgName, page: 1, searchImages: [] });
-        }
+  const handleFormSubmit = imgName => {
+   setShowModal(!showModal)
   };
   
-  toggleModal = () => {
+  const toggleModal = () => {
     this.setState(({ showModal }) => ({
       showModal: !showModal
     }));
   };
 
-    loadMore = () => {
+    const loadMore = () => {
         this.setState(({ page }) => {
             return { page: page + 1 }
         })
     };
-    onImgClick = img => {
+    const onImgClick = img => {
         this.setState({ largeImageURL: img });
-        this.toggleModal();
+        toggleModal();
     };
-  render() {
-    const { searchImages, error, loading, largeImageURL, showModal} = this.state;
+
+    // const { searchImages, error, loading, largeImageURL, showModal} = this.state;
     const isSearchImages = Boolean(searchImages.length);
     return (
     <div className={styles.app}>
-        <Searchbar onSubmit={this.handleFormSubmit} />
+        <Searchbar onSubmit={handleFormSubmit} />
         {loading && <Loader />}
         {error && <p>Restart page or modify the request</p>}
-        {isSearchImages && <ImageGallery searchImages={searchImages} onImgClick={this.onImgClick} />}
-        {isSearchImages  && <Button onClick={this.loadMore} />}
-        {showModal && (<Modal onClose={this.toggleModal} largeImageURL={largeImageURL} />)}
+        {isSearchImages && <ImageGallery searchImages={searchImages} onImgClick={onImgClick} />}
+        {isSearchImages  && <Button onClick={loadMore} />}
+        {showModal && (<Modal onClose={toggleModal} largeImageURL={largeImageURL} />)}
     </div>
  ) 
 }
-};
