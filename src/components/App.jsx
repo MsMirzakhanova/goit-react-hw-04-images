@@ -22,43 +22,38 @@ export function App() {
       return;
     }
     setLoading(true);
-                fetchImages(imgName, page)
-            .then(data =>
-                setSearchImages((searchImages) => {
-                    return {
-                        searchImages: [...searchImages, ...data.hits]
-                    }
-                }))
-            .catch(error => {
-                setError(error)
-            })
-            .finally(() => setLoading(false))
-
+    fetchImages(imgName, page)
+      .then(data => {
+        setSearchImages(searchImages => [...searchImages, ...data.hits]);
+      })
+      .catch(error => {
+        setError(error)
+      })
+      .finally(setLoading(false));
 }, [page,imgName ]);
   
 
 
   const handleFormSubmit = imgName => {
-   setShowModal(!showModal)
+     if (setImgName !== imgName) {
+      setImgName(imgName)
+      setPage(1)
+      setSearchImages([])
+        }
   };
   
   const toggleModal = () => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal
-    }));
+setShowModal(!showModal)
   };
 
     const loadMore = () => {
-        this.setState(({ page }) => {
-            return { page: page + 1 }
-        })
+        setPage(page + 1)
     };
-    const onImgClick = img => {
-        this.setState({ largeImageURL: img });
+    const onImgClick = largeImageURL => {
+        setLargeImageURL(largeImageURL);
         toggleModal();
     };
 
-    // const { searchImages, error, loading, largeImageURL, showModal} = this.state;
     const isSearchImages = Boolean(searchImages.length);
     return (
     <div className={styles.app}>
