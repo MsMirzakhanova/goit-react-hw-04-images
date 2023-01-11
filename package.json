@@ -2,7 +2,7 @@
   "name": "react-homework-template",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://MsMirzakhanova.github.io/goit-react-hw-03-image-finder/",
+  "homepage": "https://MsMirzakhanova.github.io/goit-react-hw-04-images/",
   "dependencies": {
     "@flaticon/flaticon-uicons": "^1.7.0",
     "@testing-library/jest-dom": "^5.16.3",
